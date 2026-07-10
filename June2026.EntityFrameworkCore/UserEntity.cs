@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace June2026.EntityFrameworkCore
 {
-    [Table("Tbl_User")]
+    [Table("Tbl_Staff")]
     public class UserEntity
     {
         [Key]
-        [Column("userId")]
-        public int id {get; set;}
+        [Column("Id")]
+        public int userId {get; set;}
         public string name {get; set;}
     }
 }

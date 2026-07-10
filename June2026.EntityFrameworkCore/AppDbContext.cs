@@ -20,7 +20,7 @@ namespace June2026.EntityFrameworkCore
                 optionsBuilder.UseSqlServer(sb.ConnectionString);
             }
         }
-        public DbSet<UserEntity> Staffs {get; set;}
+        public DbSet<UserEntity> Users {get; set;}
         
     }
 }
