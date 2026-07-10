@@ -1,4 +1,5 @@
-﻿using June2026.EntityFrameworkCore;
+﻿using June2026.Database.AppDbContextModels;
+using June2026.EntityFrameworkCore;
 
 June2026AppDbContext db = new June2026AppDbContext();
 List<UserEntity> lst = db.Users.ToList();
@@ -45,3 +46,8 @@ else
     db.Users.Remove(existingUser1);
     db.SaveChanges();
 }
+
+AppDbContext db2 = new AppDbContext();
+db2.TblStaffs.ToList();
+db2.TblStudents.ToList();
+db2.TblUsers.ToList();

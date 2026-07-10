@@ -21,4 +21,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../June2026.Database/June2026.Database.csproj" />
+  </ItemGroup>
+
 </Project>
