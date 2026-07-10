@@ -15,6 +15,8 @@ public partial class AppDbContext : DbContext
     {
     }
 
+    public virtual DbSet<TblProduct> TblProducts { get; set; }
+
     public virtual DbSet<TblStaff> TblStaffs { get; set; }
 
     public virtual DbSet<TblStudent> TblStudents { get; set; }
@@ -27,6 +29,16 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TblProduct>(entity =>
+        {
+            entity.ToTable("Tbl_Product");
+
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
+        });
+
         modelBuilder.Entity<TblStaff>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_Tbl_Targaryen");

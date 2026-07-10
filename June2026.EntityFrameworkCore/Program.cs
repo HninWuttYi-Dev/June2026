@@ -51,3 +51,4 @@ AppDbContext db2 = new AppDbContext();
 db2.TblStaffs.ToList();
 db2.TblStudents.ToList();
 db2.TblUsers.ToList();
+db2.TblProducts.ToList();
