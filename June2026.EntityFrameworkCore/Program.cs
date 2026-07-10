@@ -1,6 +1,6 @@
 ﻿using June2026.EntityFrameworkCore;
 
-AppDbContext db = new AppDbContext();
+June2026AppDbContext db = new June2026AppDbContext();
 List<UserEntity> lst = db.Users.ToList();
 //get all user
 foreach (UserEntity item in lst)
