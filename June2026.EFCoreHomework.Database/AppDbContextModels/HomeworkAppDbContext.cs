@@ -17,7 +17,7 @@ public partial class HomeworkAppDbContext : DbContext
 
     public virtual DbSet<TblCustomer> TblCustomers { get; set; }
 
-    public virtual DbSet<TblDepartment> TblDepartments { get; set; }
+    public virtual DbSet<TblVehicle> TblVehicles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -42,16 +42,16 @@ public partial class HomeworkAppDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<TblDepartment>(entity =>
+        modelBuilder.Entity<TblVehicle>(entity =>
         {
-            entity.HasKey(e => e.DepartmentId).HasName("PK__Tbl_Depa__B2079BED5143DAED");
+            entity.HasKey(e => e.VehicleId).HasName("PK__Tbl_Vehi__476B549238B7CD3A");
 
-            entity.ToTable("Tbl_Department");
+            entity.ToTable("Tbl_Vehicle");
 
-            entity.Property(e => e.DepartmentName)
-                .HasMaxLength(50)
+            entity.Property(e => e.LicensePlate)
+                .HasMaxLength(20)
                 .IsUnicode(false);
-            entity.Property(e => e.Location)
+            entity.Property(e => e.VehicleType)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
