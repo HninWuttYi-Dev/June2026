@@ -4,7 +4,8 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using June2026.Database.AppDbContextModels;
-using June2026.WebApi.Models;
+using June2026.Domain.Features.UserFeatures;
+using June2026.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace June2026.WebApi.Controllers
@@ -13,102 +14,44 @@ namespace June2026.WebApi.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext _db;
+        private readonly UserService _userService;
         public UserController()
         {
-            _db = new AppDbContext();
+            _userService = new UserService();
         }
         //api/user
         [HttpGet]
         public IActionResult GetUsers()
         {
-            var lst = _db.TblUsers.ToList();
-            return Ok(lst);
+           return Ok(_userService.GetUsers(new UserListRequestModel()));
         }
         //api/user/1
         [HttpGet("{id}")]
         public IActionResult GetUser(int id)
         {
-            var item = _db.TblUsers.FirstOrDefault(x => x.UserId == id);
-            if (item is null)
-            {
-                return NotFound("User not found");
-            }
-            return Ok(item);
-
+            return Ok(_userService.GetUser(new UserEditRequestModel{UserId = id}));
         }
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserCreateRequestModel requestModel)
         {
-            TblUser user = new TblUser
-            {
-                Username = requestModel.Username,
-                Password = requestModel.Password
-            };
-            _db.TblUsers.Add(user);
-            int result = _db.SaveChanges(); //0 or 1
-            UserCreateResponseModel model = new UserCreateResponseModel
-            {
-                isSuccess = result > 0,
-                Message = result > 0 ? "Create new user successful" : "Failed to create",
-                UserId = user.UserId
-            };
-            return Ok(model);
+           return Ok(_userService.CreateUser(requestModel));
         }
-        [HttpPut]
-        public IActionResult UpsertUser()
-        {
-            return Ok("Upsert user");
-        }
+        // [HttpPut]
+        // public IActionResult UpsertUser()
+        // {
+        //     return Ok("Upsert user");
+        // }
         [HttpPatch("{id}")]
         public IActionResult UpdateUser(int id, UserPatchRequestModel requestModel)
         {
-            var item = _db.TblUsers.FirstOrDefault(x => x.UserId == id);
-            if (item is null)
-            {
-                return NotFound(new UserPatchResponseModel
-                {
-                    Message = "User doesn't exist"
-                });
-            }
-            if (!string.IsNullOrEmpty(requestModel.Username))
-            {
-                item.Username = requestModel.Username;
-            }
-            if (!string.IsNullOrEmpty(requestModel.Password))
-            {
-                item.Password = requestModel.Password;
-            }
-            int result = _db.SaveChanges();
-
-            UserPatchResponseModel model = new UserPatchResponseModel
-            {
-                isSuccess = result > 0,
-                Message = result > 0 ? "Update user successful" : "failed to update user"
-            };
-            return Ok(model);
+            requestModel.UserId = id;
+            return Ok(_userService.UpdateUser(requestModel));
         }
         //api/user?UserId  [FromQuery]
         [HttpDelete("{UserId}")]
         public IActionResult DeleteUser([FromRoute] UserDeleteRequestModel requestModel)
         {
-            var item = _db.TblUsers.FirstOrDefault(x => x.UserId == requestModel.UserId);
-            if (item is null)
-            {
-                return NotFound(new UserDeleteResponseModel
-                {
-                    Message = "User is not found"
-                });
-            }
-            _db.Remove(item);
-            int result = _db.SaveChanges();
-            UserDeleteResponseModel model = new UserDeleteResponseModel
-            {
-                isSuccess = result > 0,
-                Message = result > 0 ? "Delete Successful" : "Failed to delete"
-            };
-            return Ok(model);
-
+            return Ok(_userService.DeleteUser(requestModel));
         }
 
     }
