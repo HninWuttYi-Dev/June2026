@@ -7,12 +7,14 @@ using June2026.Domain.Models;
 
 namespace June2026.Domain.Features.UserFeatures
 {
-    public class UserService
+
+    public class UserService : IUserService
     {
         private readonly AppDbContext _db;
-        public UserService()
+
+        public UserService(AppDbContext db)
         {
-            _db = new AppDbContext();
+            _db = db;
         }
 
         public UserListResponseModel GetUsers(UserListRequestModel requestModel)

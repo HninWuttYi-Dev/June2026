@@ -14,10 +14,11 @@ namespace June2026.WebApi.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
-        public UserController()
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
         {
-            _userService = new UserService();
+            _userService = userService;
         }
         //api/user
         [HttpGet]
