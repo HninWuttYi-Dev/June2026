@@ -24,18 +24,30 @@ namespace June2026.WebApi.Controllers
         [HttpGet]
         public IActionResult GetUsers()
         {
-           return Ok(_userService.GetUsers(new UserListRequestModel()));
+            var result = _userService.GetUsers(new UserListRequestModel());
+            if (!result.isSuccess) return BadRequest(result);
+            return Ok(result);
         }
         //api/user/1
         [HttpGet("{id}")]
         public IActionResult GetUser(int id)
         {
-            return Ok(_userService.GetUser(new UserEditRequestModel{UserId = id}));
+            var result = _userService.GetUser(new UserEditRequestModel { UserId = id });
+            if (!result.isSuccess)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserCreateRequestModel requestModel)
         {
-           return Ok(_userService.CreateUser(requestModel));
+            var result = _userService.CreateUser(requestModel);
+            if (!result.isSuccess)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
         // [HttpPut]
         // public IActionResult UpsertUser()
@@ -46,13 +58,23 @@ namespace June2026.WebApi.Controllers
         public IActionResult UpdateUser(int id, UserPatchRequestModel requestModel)
         {
             requestModel.UserId = id;
-            return Ok(_userService.UpdateUser(requestModel));
+            var result = _userService.UpdateUser(requestModel);
+            if (!result.isSuccess)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
         //api/user?UserId  [FromQuery]
         [HttpDelete("{UserId}")]
         public IActionResult DeleteUser([FromRoute] UserDeleteRequestModel requestModel)
         {
-            return Ok(_userService.DeleteUser(requestModel));
+            var result = _userService.DeleteUser(requestModel);
+            if (!result.isSuccess)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
     }
