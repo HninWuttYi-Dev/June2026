@@ -14,6 +14,12 @@ namespace June2026.ConsoleApp3.Models
         public string Password { get; set; } = null!;
 
     }
+    public class UserListResponseModel
+    {
+        public bool isSuccess { get; set; }
+        public string Message { get; set; }
+        public List<GetAllUserModel> Users { get; set; }
+    }
     public class UserCreateRequestModel
     {
         public string Username { get; set; }

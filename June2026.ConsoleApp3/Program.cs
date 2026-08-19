@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using June2026.ConsoleApp3.Models;
 using Newtonsoft.Json;
 using static System.Net.Mime.MediaTypeNames;
@@ -24,11 +24,18 @@ switch (choiceNumber)
          if (response.IsSuccessStatusCode)
          {
             string content = await response.Content.ReadAsStringAsync();  //raw to JSON string
-            var users = JsonConvert.DeserializeObject<List<GetAllUserModel>>(content); //JSON to object
-            int count = 0;
-            foreach (var item in users)
+            var responseModel = JsonConvert.DeserializeObject<UserListResponseModel>(content); //JSON to object
+            if (responseModel != null && responseModel.isSuccess && responseModel.Users != null)
             {
-               Console.WriteLine($"{++count}: UserId: {item.UserId}, Username: {item.Username}");
+               int count = 0;
+               foreach (var item in responseModel.Users)
+               {
+                  Console.WriteLine($"{++count}: UserId: {item.UserId}, Username: {item.Username}");
+               }
+            }
+            else
+            {
+               Console.WriteLine(responseModel?.Message ?? "Failed to retrieve users.");
             }
          }
       ;
