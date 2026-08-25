@@ -22,17 +22,17 @@ namespace June2026.WebApi.Controllers
         }
         //api/user
         [HttpGet]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsersAsync()
         {
-            var result = _userService.GetUsers(new UserListRequestModel());
+            var result =await _userService.GetUsersAsync(new UserListRequestModel());
             if (!result.isSuccess) return BadRequest(result);
             return Ok(result);
         }
         //api/user/1
         [HttpGet("{id}")]
-        public IActionResult GetUser(int id)
+        public async Task<IActionResult> GetUserAsync(int id)
         {
-            var result = _userService.GetUser(new UserEditRequestModel { UserId = id });
+            var result = await _userService.GetUserAsync(new UserEditRequestModel { UserId = id });
             if (!result.isSuccess)
             {
                 return BadRequest(result);
@@ -40,9 +40,9 @@ namespace June2026.WebApi.Controllers
             return Ok(result);
         }
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserCreateRequestModel requestModel)
+        public async Task<IActionResult> CreateUserAsync([FromBody] UserCreateRequestModel requestModel)
         {
-            var result = _userService.CreateUser(requestModel);
+            var result =await _userService.CreateUserAsync(requestModel);
             if (!result.isSuccess)
             {
                 return BadRequest(result);
@@ -55,10 +55,10 @@ namespace June2026.WebApi.Controllers
         //     return Ok("Upsert user");
         // }
         [HttpPatch("{id}")]
-        public IActionResult UpdateUser(int id, UserPatchRequestModel requestModel)
+        public async Task<IActionResult> UpdateUserAsync(int id, UserPatchRequestModel requestModel)
         {
             requestModel.UserId = id;
-            var result = _userService.UpdateUser(requestModel);
+            var result = await _userService.UpdateUserAsync(requestModel);
             if (!result.isSuccess)
             {
                 return BadRequest(result);
@@ -67,9 +67,9 @@ namespace June2026.WebApi.Controllers
         }
         //api/user?UserId  [FromQuery]
         [HttpDelete("{UserId}")]
-        public IActionResult DeleteUser([FromRoute] UserDeleteRequestModel requestModel)
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] UserDeleteRequestModel requestModel)
         {
-            var result = _userService.DeleteUser(requestModel);
+            var result = await _userService.DeleteUserAsync(requestModel);
             if (!result.isSuccess)
             {
                 return BadRequest(result);

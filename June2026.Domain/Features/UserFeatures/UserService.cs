@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using June2026.Database.AppDbContextModels;
 using June2026.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace June2026.Domain.Features.UserFeatures
 {
@@ -17,11 +14,11 @@ namespace June2026.Domain.Features.UserFeatures
             _db = db;
         }
 
-        public UserListResponseModel GetUsers(UserListRequestModel requestModel)
+        public async Task<UserListResponseModel> GetUsersAsync(UserListRequestModel requestModel)
         {
             try
             {
-                var lst = _db.TblUsers.ToList();
+                var lst = await _db.TblUsers.ToListAsync();
                 List<UserModel> users = new List<UserModel>();
                 foreach (var item in lst)
                 {
@@ -55,11 +52,11 @@ namespace June2026.Domain.Features.UserFeatures
             }
         }
 
-        public UserEditResponseModel GetUser(UserEditRequestModel requestModel)
+        public async Task<UserEditResponseModel> GetUserAsync(UserEditRequestModel requestModel)
         {
             try
             {
-                var item = _db.TblUsers.FirstOrDefault(x => x.UserId == requestModel.UserId);
+                var item = await _db.TblUsers.FirstOrDefaultAsync(x => x.UserId == requestModel.UserId);
                 if (item is null)
                 {
                     return new UserEditResponseModel
@@ -87,7 +84,7 @@ namespace June2026.Domain.Features.UserFeatures
 
         }
 
-        public UserCreateResponseModel CreateUser(UserCreateRequestModel requestModel)
+        public async Task<UserCreateResponseModel> CreateUserAsync(UserCreateRequestModel requestModel)
         {
             try
             {
@@ -97,7 +94,7 @@ namespace June2026.Domain.Features.UserFeatures
                     Password = requestModel.Password
                 };
                 _db.TblUsers.Add(user);
-                int result = _db.SaveChanges(); //0 or 1
+                int result = await _db.SaveChangesAsync(); //0 or 1
                 UserCreateResponseModel model = new UserCreateResponseModel
                 {
                     isSuccess = true,
@@ -117,11 +114,11 @@ namespace June2026.Domain.Features.UserFeatures
         }
 
 
-        public UserPatchResponseModel UpdateUser(UserPatchRequestModel requestModel)
+        public async Task<UserPatchResponseModel> UpdateUserAsync(UserPatchRequestModel requestModel)
         {
             try
             {
-                var item = _db.TblUsers.FirstOrDefault(x => x.UserId == requestModel.UserId);
+                var item = await _db.TblUsers.FirstOrDefaultAsync(x => x.UserId == requestModel.UserId);
                 if (item is null)
                 {
                     return new UserPatchResponseModel
@@ -158,11 +155,11 @@ namespace June2026.Domain.Features.UserFeatures
             }
         }
 
-        public UserDeleteResponseModel DeleteUser(UserDeleteRequestModel requestModel)
+        public async Task<UserDeleteResponseModel> DeleteUserAsync(UserDeleteRequestModel requestModel)
         {
             try
             {
-                var item = _db.TblUsers.FirstOrDefault(x => x.UserId == requestModel.UserId);
+                var item = await _db.TblUsers.FirstOrDefaultAsync(x => x.UserId == requestModel.UserId);
                 if (item is null)
                 {
                     return new UserDeleteResponseModel
