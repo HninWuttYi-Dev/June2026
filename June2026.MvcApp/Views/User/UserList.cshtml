@@ -1,0 +1,23 @@
+@model UserListResponseModel;
+@{
+    int count = 0;
+}
+<table class="table table-responsive">
+    <thead>
+    <tr>
+        <th>No.</th>
+        <th>UserId</th>
+        <th>Username</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Users)
+        {
+            <tr>
+                <td>@(++count)</td>
+                <td>@item.UserId</td>
+                <td>@item.Username</td>
+            </tr>
+        }
+    </tbody>
+</table>
