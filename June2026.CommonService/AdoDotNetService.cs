@@ -5,12 +5,15 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using static June2026.CommonService.DbService;
 
 namespace June2026.CommonService
 {
     public class AdoDotNetService
     {
-        public void Read()
+        public readonly DbService _dbService;
+
+        public AdoDotNetService()
         {
             SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder()
             {
@@ -20,8 +23,12 @@ namespace June2026.CommonService
                 Password = "sasa@123",
                 TrustServerCertificate = true
             };
-            SqlConnection connection = new SqlConnection(sb.ConnectionString);
-            connection.Open();
+
+            _dbService = new DbService(sb);
+        }
+
+        public void Read()
+        {
             string query = @"SELECT
                 StudentId,
                 StudentName,
@@ -31,12 +38,8 @@ namespace June2026.CommonService
                 DateOfBirth,
                 IsDeleted
             from Tbl_Student;";
-            SqlCommand cmd = new SqlCommand(query, connection);
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            DataTable dTbl = new DataTable();
-            adapter.Fill(dTbl);
-            connection.Close();
-            foreach (DataRow item in dTbl.Rows)
+            DataTable dt = _dbService.Query(query);
+            foreach (DataRow item in dt.Rows)
             {
                 Console.WriteLine(item["StudentId"]);
                 Console.WriteLine(item["StudentName"]);
@@ -45,67 +48,63 @@ namespace June2026.CommonService
                 Console.WriteLine(item["Email"]);
                 DateTime dtime = Convert.ToDateTime(item["DateOfBirth"]);
                 Console.WriteLine(dtime.ToString("dd-MMM-yyyy"));
-                Console.WriteLine(item["Email"]);
-                System.Console.WriteLine(item["IsDeleted"]);
+                Console.WriteLine(item["IsDeleted"]);
                 Console.WriteLine("============================");
             }
+
         }
         public void Create()
         {
-            SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder()
-            {
-                DataSource = ".",
-                InitialCatalog = "June2026DB",
-                UserID = "sa",
-                Password = "sasa@123",
-                TrustServerCertificate= true
-            };
-            SqlConnection connection = new SqlConnection(sb.ConnectionString);
-            connection.Open();
+
             string query = @"
-                INSERT INTO Tbl_Student (StudentName, FatherName, StudentNo, Email, DateOfBirth)
-                VALUES 
-                    ('Hla Hla', 'U Ba', 'STU-011', 'koko@example.com', '2002-01-01'),
-                    ('Ni Ni', 'U Mya', 'STU-012', 'nilar@example.com', '2001-05-12'),
-                    ('Zaw Zaw', 'U Hla', 'STU-013', 'zawzaw@example.com', '2000-11-20');
-            ";
-            SqlCommand cmd = new SqlCommand(query, connection);
-            cmd.ExecuteNonQuery();
-            connection.Close();
+        INSERT INTO Tbl_Student (StudentName, FatherName, StudentNo, Email, DateOfBirth, isDeleted)
+        VALUES (@StudentName, @FatherName, @StudentNo, @Email, @DateOfBirth, @isDeleted);";
+
+            List<SqlParameterDto> parameters = new List<SqlParameterDto>
+    {
+        new() { Name = "StudentName", Value = "Sandar Win" },
+        new() { Name = "FatherName", Value = "U Ba Ba" },
+        new() { Name = "StudentNo", Value = "STU-16" },
+        new() { Name = "Email", Value = "sandarwin@gmail.com" },
+        new() { Name = "DateOfBirth", Value = new DateTime(2000, 11, 20) },
+        new() { Name = "isDeleted", Value = false }
+
+    };
+            int result = _dbService.Execute(query, parameters);
+            Console.WriteLine($"{result} row inserted");
         }
         public void Update()
         {
-            SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder()
-            {
-                DataSource = ".",
-                InitialCatalog = "June2026DB",
-                UserID = "sa",
-                Password = "sasa@123",
-                TrustServerCertificate = true
-            };
-            SqlConnection connection = new SqlConnection(sb.ConnectionString);
-            connection.Open();
-            string query = @"UPDATE Tbl_Student SET Email = 'nilar222@example.com' where StudentID = 3003;";
-            SqlCommand cmd = new SqlCommand(query, connection);
-            cmd.ExecuteNonQuery();
-            connection.Close();
+            string query = @"
+            UPDATE Tbl_Student
+            SET StudentName = @StudentName,
+                FatherName =  @FatherName,
+                StudentNo =  @StudentNo,
+                Email = @Email,
+                DateOfBirth = @DateOfBirth
+            Where StudentId = @StudentId;
+            ";
+            List<SqlParameterDto> parameters = new List<SqlParameterDto>
+        {
+            new() { Name = "StudentID", Value = 2},
+            new() { Name = "StudentName", Value = "Updated Name" },
+            new() { Name = "FatherName", Value = "Updated Father" },
+            new() { Name = "StudentNo", Value = "Updated StudentNo" },
+            new() { Name = "Email", Value = "updated@gmail.com" },
+            new() { Name = "DateOfBirth", Value = new DateTime(2000, 1, 1) },
+        };
+            int result = _dbService.Execute(query, parameters);
+            Console.WriteLine($"{result} row updated");
         }
         public void Delete()
         {
-            SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder()
+            string query = @"DELETE Tbl_Student where StudentID = @StudentID;";
+            var parameters =  new List<SqlParameterDto>
             {
-                DataSource = ".",
-                InitialCatalog = "June2026DB",
-                UserID = "sa",
-                Password = "sasa@123",
-                TrustServerCertificate = true
+                new() {Name = "StudentID", Value = 2}
             };
-            SqlConnection connection = new SqlConnection(sb.ConnectionString);
-            connection.Open();
-            string query = @"DELETE Tbl_Student where StudentID = 3003;";
-            SqlCommand cmd = new SqlCommand(query, connection);
-            cmd.ExecuteNonQuery();
-            connection.Close();
+            int result = _dbService.Execute(query, parameters);
+            Console.WriteLine($"{result} row deleted");
         }
     }
 }
