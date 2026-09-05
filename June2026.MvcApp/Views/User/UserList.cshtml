@@ -1,10 +1,14 @@
 @model UserListResponseModel;
 @{
+    ViewData["Title"] = "User List";
     int count = 0;
 }
+<h1>User List</h1>
+<a href="/User/Create" class="btn btn-primary">Add User</a>
 <table class="table table-responsive">
     <thead>
     <tr>
+        <th>Action</th>
         <th>No.</th>
         <th>UserId</th>
         <th>Username</th>
@@ -14,6 +18,12 @@
         @foreach (var item in Model.Users)
         {
             <tr>
+                <td>
+                   <a href="/User/Edit/@item.UserId" class="btn btn-sm btn-outline-warning">Edit</a>
+                   <a href="/User/Delete/@item.UserId" class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('Are you sure to delete this user?');"
+                   >Delete</a>
+                </td>
                 <td>@(++count)</td>
                 <td>@item.UserId</td>
                 <td>@item.Username</td>

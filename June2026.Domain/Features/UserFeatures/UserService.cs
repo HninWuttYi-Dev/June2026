@@ -18,7 +18,9 @@ namespace June2026.Domain.Features.UserFeatures
         {
             try
             {
-                var lst = await _db.TblUsers.ToListAsync();
+                var lst = await _db.TblUsers
+                            .OrderByDescending(x => x.UserId)
+                            .ToListAsync();
                 List<UserModel> users = new List<UserModel>();
                 foreach (var item in lst)
                 {
