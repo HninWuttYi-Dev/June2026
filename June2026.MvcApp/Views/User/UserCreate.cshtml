@@ -1,3 +1,33 @@
+@using static June2026.MvcApp.Controllers.UserController
+
+@{
+     List<UserRoleModel> roles = new List<UserRoleModel>();
+    @* if(ViewBag.Roles != null) {
+        roles = ViewBag.Roles;
+    } *@
+    if(ViewData["Roles"] != null) {
+        roles = ViewData["Roles"] as List<UserRoleModel>;
+    }
+    bool isSuccessTempData = false;
+    if(!isSuccessTempData != null) {
+        isSuccessTempData = Convert.ToBoolean(TempData["isSuccess"]);
+    }
+    string message = string.Empty;
+    if(message != null) {
+        message = Convert.ToString(TempData["Message"]);
+    }
+}
+@if(TempData["Message"] != null) {
+    if(isSuccessTempData) {
+        <div class="alert alert-success" role="alert">
+            @message
+        </div>
+    } else {
+        <div class="alert alert-danger" role="alert">
+            @message
+        </div>
+    }
+}
 <form action="/User/Save" method="post">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
@@ -7,6 +37,15 @@
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" name="Password" id="password" placeholder="Enter your password">
+        </div>
+        <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select class="form-control" name="Role" id="role">
+                <option value="0">Select a role</option>
+                @foreach(var role in roles) {
+                    <option value="@role.RoleCode">@role.RoleName</option>
+                }
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
