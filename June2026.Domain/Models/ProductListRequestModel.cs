@@ -14,6 +14,11 @@ namespace June2026.Domain.Models
         public bool isSuccess {get; set;}
         public string Message {get; set;}
         public List<Product> Products {get; set;}
+
+        public static implicit operator Task<object>(ProductListResponseModel v)
+        {
+            throw new NotImplementedException();
+        }
     }
     public class Product
     {
