@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace June2026.Domain.Features.ProductFeatures
 {
 
+
     public class ProductService : IProductService
     {
         private readonly AppDbContext _db;
@@ -18,7 +19,7 @@ namespace June2026.Domain.Features.ProductFeatures
             _db = db;
         }
 
-        public async Task<ProductListResponseModel> GetAllProductsAsync()
+        public async Task<ProductListResponseModel> GetAllProductsAsync(ProductListRequestModel requestModel)
         {
             try
             {
@@ -98,7 +99,7 @@ namespace June2026.Domain.Features.ProductFeatures
                 int result = await _db.SaveChangesAsync();
                 return new ProductCreateResponseModel
                 {
-                    isSuccess = false,
+                    isSuccess = true,
                     Message = "Product is created successfully",
                     Id = product.Id
                 };
@@ -160,6 +161,7 @@ namespace June2026.Domain.Features.ProductFeatures
                     };
                 }
                 _db.Remove(item);
+                await _db.SaveChangesAsync();
                 return new ProductDeleteResponseModel
                 {
                     isSuccess = true,
@@ -174,6 +176,11 @@ namespace June2026.Domain.Features.ProductFeatures
                     Message = ex.ToString()
                 };
             }
+        }
+
+        public Task<ProductListResponseModel> GetAllProductsAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 

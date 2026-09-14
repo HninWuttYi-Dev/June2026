@@ -6,6 +6,7 @@ namespace June2026.Domain.Features.ProductFeatures
     {
         Task<ProductCreateResponseModel> CreateProductAsync(ProductCreateRequestModel requestModel);
         Task<ProductDeleteResponseModel> DeleteProductAsync(ProductDeleteRequestModel requestModel);
+        Task<ProductListResponseModel> GetAllProductsAsync(ProductListRequestModel requestModel);
         Task<ProductListResponseModel> GetAllProductsAsync();
         Task<ProductEditResponseModel> GetProductByIdAsync(ProductEditRequestModel requestModel);
         Task<ProductPatchResponseModel> UpdateProduct(ProductPatchRequestModel requestModel);

@@ -1,0 +1,56 @@
+@using June2026.Domain.Models
+@model ProductListResponseModel;
+@{
+    ViewData["Title"] = "Products";
+    bool isSuccessTempData = false;
+    if(TempData["isSuccess"] != null){
+        isSuccessTempData = Convert.ToBoolean(TempData["isSuccess"]);
+    }
+    string message = string.Empty;
+    if(TempData["Message"] != null) {
+        message = Convert.ToString(TempData["Message"]);
+    }
+}
+<h1>Product List</h1>
+<a href="/Product/Create" class="btn btn-primary m-2">Create new product</a>
+@if(TempData["isSuccess"] != null) {
+    if(isSuccessTempData) {
+        <div class="alert alert-success" role="alert">
+            @message
+        </div>
+    } else {
+        <div class="alert alert-danger" role="alert">
+            @message
+        </div>
+    }
+}
+<table class="table table-bordered table-striped" id="productTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Price</td>
+                <td>@item.Quantity</td>
+                <td>
+                    <a href="/Product/Edit/@item.Id" class="btn btn-sm btn-warning m-1">Edit</a>
+
+                     <a href="/Product/Delete/@item.Id"
+                     class="btn btn-sm btn-danger m-1"
+                     onclick="return confirm('Are you sure to delete this user?');"
+                      >
+                     Delete
+                     </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
