@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Product Edit";
+    string productName = string.Empty;
+    if (ViewData["Name"] != null)
+    {
+        productName = Convert.ToString(ViewData["Name"]);
+    }
+    float price = 0f;
+    if (ViewData["Price"] != null)
+    {
+        price = Convert.ToSingle(ViewData["Price"]);
+    }
+    int quantity = 0;
+    if (ViewData["Quantity"] != null)
+    {
+        quantity = Convert.ToInt32(ViewData["Quantity"]);
+    }
+}
+
+<div class="mb-3">
+    <label for="productName" class="form-label">Product Name</label>
+    <input type="text" class="form-control" id="productName" value="@productName" placeholder="Coffee">
+</div>
+
+<div class="mb-3">
+    <label for="price" class="form-label">Price</label>
+    <input type="number" class="form-control" id="price" value="@price" step="0.01" min="0.01">
+</div>
+
+<div class="mb-3">
+    <label for="quantity" class="form-label">Quantity</label>
+    <input type="number" class="form-control" id="quantity" value="@quantity" min="0">
+</div>
+
+<button type="button" class="btn btn-primary" id="bntSave">Update</button>
+<a href="/Product" class="btn btn-outline-secondary">Cancel</a>

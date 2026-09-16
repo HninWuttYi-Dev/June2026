@@ -1,4 +1,5 @@
 using June2026.Database.AppDbContextModels;
+using June2026.Domain.Features.ProductFeatures;
 using June2026.Domain.Features.UserFeatures;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"));
 });
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<IProductService, ProductService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
