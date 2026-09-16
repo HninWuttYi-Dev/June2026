@@ -1,0 +1,55 @@
+<div id="alertPlaceholder" class="mt-3"></div>
+<div class="mb-3">
+    <label for="Name" class="form-label">Product Name</label>
+    <input type="text" class="form-control" name="Name" id="name" placeholder="Enter the product">
+</div>
+
+<div class="mb-3">
+    <label for="price" class="form-label">Price</label>
+    <input type="number" class="form-control" name="Price" id="price" placeholder="Enter products price">
+</div>
+<div class="mb-3">
+    <label for="price" class="form-label">Quantity</label>
+    <input type="number" class="form-control" name="Quantity" id="quantity" placeholder="Enter product's quantity">
+</div>
+
+<button type="button" class="btn btn-primary" id="btnSave">Save</button>
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            $('#btnSave').click(function() {
+                var name = $('#name').val();
+                var price = $('#price').val();
+                var quantity = $('#quantity').val();
+                const _requestModel = {
+                    Name: name,
+                    Price: price,
+                    Quantity: quantity
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Product/Save',
+                    data: { requestModel: _requestModel },
+                    success: function(response) {
+                        console.log({ response });
+                         const alertType = response.isSuccess ? 'alert-success' : 'alert-danger';
+                        $('#alertPlaceholder').html(
+                            `<div class="alert ${alertType}" role="alert">${response.message}</div>`
+                        );
+                        alert(response.Message);
+
+                        if (!response.isSuccess) {
+                            return;
+                        }
+                        window.location.href = '/Product/Index';
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+}
+        

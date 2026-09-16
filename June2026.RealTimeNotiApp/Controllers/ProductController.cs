@@ -54,17 +54,18 @@ namespace June2026.RealTimeNotiApp.Controllers
 
             if (model.isSuccess)
             {
-                await _hubContext.Clients.All.SendAsync("NewProductAdded", new
-                {
-                    Name = requestModel.Name,
-                    Price = requestModel.Price,
-                    Quantity = requestModel.Quantity
-                });
+                await _hubContext.Clients.All.SendAsync("NewProductAdded");
             }
 
             return Json(model);
         }
-
+        // ProductController
+        [HttpGet]
+        public IActionResult ProductNoti()
+        {
+            // You can return 0, or keep a static counter if you want
+            return PartialView("ProductNoti", 0);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

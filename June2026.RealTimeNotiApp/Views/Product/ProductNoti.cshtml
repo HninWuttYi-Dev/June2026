@@ -1,0 +1,13 @@
+<!-- ProductNoti.cshtml -->
+@model int
+
+<button type="button" class="btn btn-primary position-relative" id="notiCount">
+    Inbox
+    @if (Model > 0)
+    {
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            @Model
+            <span class="visually-hidden">unread messages</span>
+        </span>
+    }
+</button>
