@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using June2026.Domain.Features.ProductFeatures;
+using June2026.MvcAppAJAX.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace June2026.MvcAppAJAX.Controllers
@@ -12,10 +14,11 @@ namespace June2026.MvcAppAJAX.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
-
-        public ProductController(IProductService productService)
+        private readonly IHubContext<RealTimeHub> _hubContext;
+        public ProductController(IProductService productService, IHubContext<RealTimeHub> hubContext)
         {
             _productService = productService;
+            _hubContext = hubContext;
         }
 
         [ActionName("Index")]
@@ -62,6 +65,13 @@ namespace June2026.MvcAppAJAX.Controllers
                 });
             }
             ProductCreateResponseModel model = await _productService.CreateProductAsync(requestModel);
+            if(model.isSuccess)
+            {
+                var lst = await _productService.GetAllProductsAsync(new ProductListRequestModel{});
+                var labels =  lst.Products.Select(p=> p.Name).ToList();
+                var data = lst.Products.Select(p=> p.Quantity).ToList();
+                await _hubContext.Clients.All.SendAsync("ReceiveProductsUpdateEvent", labels, data);
+            }
             return Json(model);
         }
         [ActionName("Edit")]
@@ -98,6 +108,13 @@ namespace June2026.MvcAppAJAX.Controllers
                 });
             }
             var model = await _productService.UpdateProductAsync(requestModel);
+            if (model.isSuccess)
+            {
+                var lst = await _productService.GetAllProductsAsync(new ProductListRequestModel { });
+                var labels = lst.Products.Select(p => p.Name).ToList();
+                var data = lst.Products.Select(p => p.Quantity).ToList();
+                await _hubContext.Clients.All.SendAsync("ReceiveProductsUpdateEvent", labels, data);
+            }
             return Json(model);
         }
         [HttpPost]
