@@ -36,7 +36,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model?.Products == null || Model.Products.Count == 0)
+        @if (productCards == null || productCards.Count == 0)
         {
             <tr>
                 <td colspan="6">No products found.</td>
@@ -44,12 +44,12 @@
         }
         else
         {
-            foreach (Product item in Model.Products)
+            foreach (Product item in productCards)
             {
                 <tr>
                     <td>
                         <a href="/Product/Edit/@item.Id" class="btn btn-sm btn-outline-warning">Edit</a>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteProduct(@item.Id)">Delete</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteProduct(@item.Id)" id="deleteBtn">Delete</button>
                     </td>
                     <td>@(++count)</td>
                     <td>@item.Name</td>
@@ -60,3 +60,30 @@
         }
     </tbody>
 </table>
+
+@section scripts {
+    <script>
+        function deleteProduct(id) {
+             const confirmResult = confirm("Are you sure you want to delete this product?");
+            if (!confirmResult) {
+                return;
+            }
+            const _requestModel = {
+                Id: id
+            }
+            $.ajax({
+                type: "POST",
+                url: '/Product/Delete',
+                data: {requestModel : _requestModel},
+                success: function(response) {
+                    alert(response.Message);
+                    if (!response.isSuccess) return;
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                    alert("Error: " + xhr.responseText);
+                }
+            });
+        }
+    </script>
+}

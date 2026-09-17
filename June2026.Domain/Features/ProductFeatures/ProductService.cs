@@ -29,6 +29,7 @@ namespace June2026.Domain.Features.ProductFeatures
                 {
                     Product product = new Product
                     {
+                        Id = item.Id,
                         Name = item.Name,
                         Price = item.Price,
                         Quantity = item.Quantity,
@@ -57,7 +58,14 @@ namespace June2026.Domain.Features.ProductFeatures
             try
             {
                 var item = await _db.TblProducts.FirstOrDefaultAsync(x => x.Id == requestModel.Id);
-
+                if (item is null)
+                {
+                    return new ProductEditResponseModel
+                    {
+                        isSuccess = false,
+                        Message = "Product not found"
+                    };
+                }
                 return new ProductEditResponseModel
                 {
                     isSuccess = true,
@@ -115,7 +123,7 @@ namespace June2026.Domain.Features.ProductFeatures
                 };
             }
         }
-        public async Task<ProductPatchResponseModel> UpdateProduct(ProductPatchRequestModel requestModel)
+        public async Task<ProductPatchResponseModel> UpdateProductAsync(ProductPatchRequestModel requestModel)
         {
             try
             {

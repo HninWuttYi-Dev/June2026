@@ -1,5 +1,10 @@
 @{
     ViewData["Title"] = "Product Edit";
+    int productId = 0;
+    if (ViewData["Id"] != null)
+    {
+        productId = Convert.ToInt32(ViewData["Id"]);
+    }
     string productName = string.Empty;
     if (ViewData["Name"] != null)
     {
@@ -32,5 +37,32 @@
     <input type="number" class="form-control" id="quantity" value="@quantity" min="0">
 </div>
 
-<button type="button" class="btn btn-primary" id="bntSave">Update</button>
+<button type="button" class="btn btn-primary" id="btnSave">Update</button>
 <a href="/Product" class="btn btn-outline-secondary">Cancel</a>
+
+@section scripts {
+    <script>
+        $('#btnSave').on('click', function () {
+            const _requestModel = {
+                Name: $('#productName').val(),
+                Price: $('#price').val() ? parseFloat($('#price').val()) : null,
+                Quantity: $('#quantity').val() ? parseInt($('#quantity').val()) : null
+            }
+         $.ajax({
+            type: 'POST',
+            url: '/Product/Update/@productId',
+            data: {requestModel: _requestModel},
+            success: function(response) {
+                    alert(response.Message);
+                    if (!response.isSuccess) {
+                        return;
+                    }
+                    window.location.href = '/Product';
+                },
+                error: function(xhr) {
+                    alert("Error: " + xhr.responseText);
+                }
+         });
+        });
+    </script>
+}

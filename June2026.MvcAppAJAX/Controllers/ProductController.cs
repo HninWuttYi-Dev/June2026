@@ -35,7 +35,7 @@ namespace June2026.MvcAppAJAX.Controllers
         [ActionName("Save")]
         public async Task<IActionResult> ProductSaveAsync(ProductCreateRequestModel requestModel)
         {
-            if(string.IsNullOrWhiteSpace(requestModel.Name))
+            if (string.IsNullOrWhiteSpace(requestModel.Name))
             {
                 // TempData["isSuccess"] = false;
                 // TempData["Message"] = "Product's name is required";
@@ -44,21 +44,17 @@ namespace June2026.MvcAppAJAX.Controllers
                     isSuccess = false,
                     Message = "Product's name is required"
                 });
-            } 
-            if(requestModel.Price <= 0)
+            }
+            if (requestModel.Price <= 0)
             {
-                // TempData["isSuccess"] = false;
-                // TempData["Message"] = "Price must be greater than zero";
                 return Json(new ProductCreateResponseModel
                 {
                     isSuccess = false,
-                    Message= "Price must be greater than zero"
+                    Message = "Price must be greater than zero"
                 });
             }
-            if(requestModel.Quantity < 0)
+            if (requestModel.Quantity < 0)
             {
-                // TempData["isSuccess"] = false;
-                // TempData["Message"] = "Quantity must be greater or zero";
                 return Json(new ProductCreateResponseModel
                 {
                     isSuccess = false,
@@ -66,25 +62,50 @@ namespace June2026.MvcAppAJAX.Controllers
                 });
             }
             ProductCreateResponseModel model = await _productService.CreateProductAsync(requestModel);
-            // TempData["isSuccess"] = model.isSuccess;
-            // TempData["Message"] = model.Message;
             return Json(model);
         }
         [ActionName("Edit")]
         public async Task<IActionResult> ProductEditAsync(int id)
         {
             ProductEditResponseModel model = await _productService.GetProductByIdAsync(
-                            new ProductEditRequestModel{ Id = id});
-            if(!model.isSuccess)
+                            new ProductEditRequestModel { Id = id });
+            if (!model.isSuccess)
             {
                 TempData["isSuccess"] = false;
                 TempData["Message"] = model.Message;
                 return Redirect("/Product");
             }
+            ViewData["Id"] = model.Id;
             ViewData["Name"] = model.Name;
             ViewData["Price"] = model.Price;
             ViewData["Quantity"] = model.Quantity;
             return View("ProductEdit", model);
+        }
+        [HttpPost]
+        [ActionName("Update")]
+        public async Task<IActionResult> ProductUpdateAsync(int id, ProductPatchRequestModel requestModel)
+        {
+            requestModel.Id = id;
+            if (
+            string.IsNullOrWhiteSpace(requestModel.Name)
+           && requestModel.Price is null
+           && requestModel.Quantity is null)
+            {
+                return Json(new ProductPatchResponseModel
+                {
+                    isSuccess = false,
+                    Message = "Please update at least one field."
+                });
+            }
+            var model = await _productService.UpdateProductAsync(requestModel);
+            return Json(model);
+        }
+        [HttpPost]
+        [ActionName("Delete")]
+        public async Task<IActionResult> ProductDeleteAsync(ProductDeleteRequestModel requestModel)
+        {
+            var model = await _productService.DeleteProductAsync(requestModel);
+            return Json(model);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
